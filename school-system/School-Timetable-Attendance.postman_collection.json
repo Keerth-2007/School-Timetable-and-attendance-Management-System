@@ -1,0 +1,169 @@
+{
+  "info": {
+    "name": "School Timetable and Attendance Management System",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8080" }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/api/auth/register",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"New Teacher\",\n  \"email\": \"new.teacher@school.com\",\n  \"password\": \"Teacher@123\",\n  \"phone\": \"9123456780\",\n  \"role\": \"TEACHER\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/api/auth/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"ravi.teacher@school.com\",\n  \"password\": \"Teacher@123\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Users",
+      "item": [
+        { "name": "Get All Users", "request": { "method": "GET", "url": "{{baseUrl}}/api/users" } },
+        { "name": "Get Profile by Id", "request": { "method": "GET", "url": "{{baseUrl}}/api/users/profile/6" } },
+        { "name": "Get Users by Role (STUDENT)", "request": { "method": "GET", "url": "{{baseUrl}}/api/users/role/STUDENT" } }
+      ]
+    },
+    {
+      "name": "Timetable",
+      "item": [
+        { "name": "Get Class Timetable (8A)", "request": { "method": "GET", "url": "{{baseUrl}}/api/timetable/class/8A" } },
+        { "name": "Get Teacher Timetable", "request": { "method": "GET", "url": "{{baseUrl}}/api/timetable/teacher/3" } },
+        {
+          "name": "Create Slot (clash -> 409)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/api/timetable/generate",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"classSection\": \"9B\",\n  \"day\": \"MON\",\n  \"period\": 1,\n  \"subject\": { \"id\": 1 },\n  \"teacher\": { \"id\": 3 },\n  \"room\": { \"id\": 1 }\n}"
+            }
+          }
+        },
+        {
+          "name": "Create Slot (no clash -> 201)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/api/timetable/generate",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"classSection\": \"9B\",\n  \"day\": \"TUE\",\n  \"period\": 3,\n  \"subject\": { \"id\": 1 },\n  \"teacher\": { \"id\": 3 },\n  \"room\": { \"id\": 1 }\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Attendance",
+      "item": [
+        {
+          "name": "Mark Attendance",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/api/attendance",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"student\": { \"id\": 6 },\n  \"date\": \"2026-08-11\",\n  \"status\": \"PRESENT\",\n  \"capturedBy\": \"BIOMETRIC\",\n  \"recordedBy\": { \"id\": 3 }\n}"
+            }
+          }
+        },
+        { "name": "Get Student Attendance History", "request": { "method": "GET", "url": "{{baseUrl}}/api/attendance/student/6" } },
+        { "name": "Get Student Attendance %", "request": { "method": "GET", "url": "{{baseUrl}}/api/attendance/student/6/percentage" } },
+        { "name": "Get Class Attendance by Date", "request": { "method": "GET", "url": "{{baseUrl}}/api/attendance/class/8A/date/2026-08-11" } },
+        {
+          "name": "Override Attendance (with reason)",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/api/attendance/2/override",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"PRESENT\",\n  \"reason\": \"Biometric device malfunctioned, verified manually\"\n}"
+            }
+          }
+        },
+        { "name": "Get Below 75% Students", "request": { "method": "GET", "url": "{{baseUrl}}/api/attendance/below75" } }
+      ]
+    },
+    {
+      "name": "Leave",
+      "item": [
+        {
+          "name": "Apply Leave",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/api/leave",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"teacher\": { \"id\": 3 },\n  \"leaveType\": \"SL\",\n  \"fromDate\": \"2026-08-15\",\n  \"toDate\": \"2026-08-15\",\n  \"reason\": \"Fever\"\n}"
+            }
+          }
+        },
+        { "name": "Get Pending Leaves", "request": { "method": "GET", "url": "{{baseUrl}}/api/leave/pending" } },
+        { "name": "Suggest Substitute", "request": { "method": "GET", "url": "{{baseUrl}}/api/leave/suggest-substitute/3" } },
+        {
+          "name": "Approve Leave",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/api/leave/1/approve",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"approvedById\": 2,\n  \"substituteTeacherId\": 3\n}"
+            }
+          }
+        },
+        { "name": "Get Leave Balance", "request": { "method": "GET", "url": "{{baseUrl}}/api/leave/balance/4" } }
+      ]
+    },
+    {
+      "name": "Biometric Devices",
+      "item": [
+        { "name": "Get All Devices", "request": { "method": "GET", "url": "{{baseUrl}}/api/devices" } },
+        {
+          "name": "Create Device",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/api/devices",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"deviceName\": \"Lab Scanner\",\n  \"location\": \"Science Lab\",\n  \"deviceType\": \"FINGERPRINT\",\n  \"batteryLevel\": 90,\n  \"status\": \"ONLINE\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Subjects & Rooms",
+      "item": [
+        { "name": "Get All Subjects", "request": { "method": "GET", "url": "{{baseUrl}}/api/subjects" } },
+        { "name": "Get All Rooms", "request": { "method": "GET", "url": "{{baseUrl}}/api/rooms" } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+# Node / Frontend
+**/node_modules/
+**/dist/
+**/build/
+.npm
+.eslintcache
+
+# Java / Spring Boot / Maven
+**/target/
+*.class
+*.jar
+*.war
+*.ear
+
+# Environment & Secret files
+.env
+.env.local
+*.env
+application-local.properties
+
+# IDE & Editor files
+.vscode/
+.idea/
+*.iml
+.classpath
+.project
+.settings/
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Scratch / Temp
+scratch/
+*.log
